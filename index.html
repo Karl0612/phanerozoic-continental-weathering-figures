@@ -3,81 +3,36 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>显生宙大陆风化交互图件</title>
+  <title>显生宙大陆风化交互数据库</title>
+  <script src="https://cdn.plot.ly/plotly-3.1.0.min.js"></script>
   <style>
     :root { color-scheme: light; }
     * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-width: 320px;
-      color: #1c2833;
-      background: #f2f5f7;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
-    }
-    .page { max-width: 1680px; margin: 0 auto; padding: 24px; }
-    .masthead {
-      display: flex;
-      align-items: end;
-      justify-content: space-between;
-      gap: 20px;
-      padding: 0 4px 18px;
-    }
-    h1 { margin: 0; font-size: clamp(1.35rem, 2.6vw, 2rem); font-weight: 700; letter-spacing: .01em; }
-    .subtitle { margin: 7px 0 0; color: #61717d; font-size: .95rem; }
-    .tabs { display: flex; flex-wrap: wrap; gap: 8px; }
-    button {
-      border: 1px solid #c8d2d8;
-      border-radius: 7px;
-      padding: 8px 13px;
-      color: #263844;
-      background: #fff;
-      font: inherit;
-      cursor: pointer;
-    }
-    button:hover { border-color: #6d8d9d; background: #f8fbfc; }
-    .tabs button[aria-selected="true"] { border-color: #28667c; color: #fff; background: #28667c; }
-    .viewer-card { overflow: hidden; border: 1px solid #d7e0e5; border-radius: 12px; background: #fff; box-shadow: 0 5px 20px rgba(34, 57, 71, .08); }
-    .toolbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 12px 16px;
-      border-bottom: 1px solid #e2e8eb;
-      background: #fbfcfc;
-    }
-    #figure-title { font-weight: 650; }
-    .controls { display: flex; gap: 7px; }
-    .controls button { min-width: 37px; padding: 6px 10px; }
-    #viewport {
-      position: relative;
-      height: min(74vh, 920px);
-      min-height: 370px;
-      overflow: hidden;
-      touch-action: none;
-      outline: none;
-      background: #fff;
-      cursor: grab;
-      user-select: none;
-    }
-    #viewport.dragging { cursor: grabbing; }
-    #figure-image {
-      position: absolute;
-      top: 0;
-      left: 0;
-      max-width: none;
-      max-height: none;
-      transform-origin: 0 0;
-      -webkit-user-drag: none;
-      user-select: none;
-    }
-    .hint { margin: 0; padding: 10px 16px 12px; color: #62737f; font-size: .86rem; }
-    @media (max-width: 620px) {
+    body { margin: 0; background: #f3f6f8; color: #1c2a33; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif; }
+    .page { max-width: 1740px; margin: 0 auto; padding: 24px; }
+    .masthead { display: flex; justify-content: space-between; align-items: end; gap: 18px; padding: 0 3px 18px; }
+    h1 { margin: 0; font-size: clamp(1.35rem, 2.7vw, 2rem); }
+    .subtitle { margin: 7px 0 0; color: #60717c; }
+    .tabs, .subtabs, .actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    button { border: 1px solid #c6d1d7; background: #fff; color: #263944; border-radius: 7px; padding: 8px 13px; font: inherit; cursor: pointer; }
+    button:hover { border-color: #477a90; background: #f9fbfc; }
+    button[aria-selected="true"] { background: #28677e; border-color: #28677e; color: #fff; }
+    .card { overflow: hidden; background: #fff; border: 1px solid #d5e0e5; border-radius: 12px; box-shadow: 0 5px 20px rgba(34, 57, 71, .08); }
+    .toolbar { padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 14px; border-bottom: 1px solid #e2e9ec; background: #fbfcfc; }
+    .toolbar-title { font-weight: 680; }
+    .figure-wrap { padding: 8px; }
+    #figure1-map { min-height: 500px; }
+    #figure1-bc, #figure2 { min-height: 630px; }
+    #figure2-panel { display: none; }
+    .notice { margin: 0; padding: 11px 16px 14px; color: #5f707b; font-size: .89rem; }
+    .loading { padding: 72px 16px; color: #637680; text-align: center; }
+    @media (max-width: 760px) {
       .page { padding: 12px; }
       .masthead { display: block; }
       .tabs { margin-top: 15px; }
-      .toolbar { padding: 10px 12px; }
-      #viewport { min-height: 290px; height: 64vh; }
+      .toolbar { align-items: flex-start; flex-direction: column; }
+      #figure1-map { min-height: 380px; }
+      #figure1-bc, #figure2 { min-height: 500px; }
     }
   </style>
 </head>
@@ -85,118 +40,84 @@
   <main class="page">
     <header class="masthead">
       <div>
-        <h1>显生宙大陆风化交互图件</h1>
-        <p class="subtitle">公开展示：图1（A–C）与图2</p>
+        <h1>显生宙大陆风化交互数据库</h1>
+        <p class="subtitle">公开交互视图：图 1（A–C）与图 2</p>
       </div>
       <nav class="tabs" aria-label="图件选择">
-        <button type="button" data-figure="fig1" aria-selected="true">图1（A–C）</button>
-        <button type="button" data-figure="fig2" aria-selected="false">图2</button>
+        <button type="button" data-panel="figure1" aria-selected="true">图 1（A–C）</button>
+        <button type="button" data-panel="figure2" aria-selected="false">图 2</button>
       </nav>
     </header>
 
-    <section class="viewer-card" aria-label="交互图件浏览器">
+    <section id="figure1-panel" class="card" aria-label="图 1 交互视图">
       <div class="toolbar">
-        <span id="figure-title">图1（A–C）</span>
-        <div class="controls" aria-label="浏览控制">
-          <button id="zoom-out" type="button" aria-label="缩小">−</button>
-          <button id="zoom-in" type="button" aria-label="放大">＋</button>
-          <button id="reset" type="button">重置视图</button>
+        <span class="toolbar-title">图 1A：现代地理位置</span>
+        <div class="actions"><button type="button" data-reset="figure1-map">重置地图视图</button></div>
+      </div>
+      <div class="figure-wrap"><div id="figure1-map" class="loading">正在载入图 1A…</div></div>
+      <div class="toolbar"><span class="toolbar-title">图 1B–C：古纬度覆盖与年代分布</span><div class="actions"><button type="button" data-reset="figure1-bc">重置图件视图</button></div></div>
+      <div class="figure-wrap"><div id="figure1-bc" class="loading">正在载入图 1B–C…</div></div>
+      <p class="notice">支持滚轮缩放、拖动平移及右上方模式栏控件。公开版本不显示样品、文献或记录详情。</p>
+    </section>
+
+    <section id="figure2-panel" class="card" aria-label="图 2 交互视图">
+      <div class="toolbar">
+        <div class="subtabs" aria-label="图 2 子图选择">
+          <button type="button" data-figure2="figure2a" aria-selected="true">图 2A</button>
+          <button type="button" data-figure2="figure2b" aria-selected="false">图 2B</button>
+          <button type="button" data-figure2="figure2c" aria-selected="false">图 2C</button>
         </div>
+        <div class="actions"><button type="button" data-reset="figure2">重置图件视图</button></div>
       </div>
-      <div id="viewport" tabindex="0" aria-label="图件：可滚轮缩放和拖动平移">
-        <img id="figure-image" src="Figure_1_ABC.png" alt="图1 A 至 C">
-      </div>
-      <p class="hint">滚轮或触控板缩放；按住并拖动可平移；“重置视图”恢复完整图件。</p>
+      <div class="figure-wrap"><div id="figure2" class="loading">正在载入图 2…</div></div>
+      <p class="notice">支持滚轮缩放、拖动平移及右上方模式栏控件。公开版本不显示样品、文献或记录详情。</p>
     </section>
   </main>
 
   <script>
-    const figures = {
-      fig1: { src: 'Figure_1_ABC.png', title: '图1（A–C）', alt: '图1 A 至 C' },
-      fig2: { src: 'Figure_2.png', title: '图2', alt: '图2' }
-    };
-    const viewport = document.getElementById('viewport');
-    const image = document.getElementById('figure-image');
-    const title = document.getElementById('figure-title');
-    let active = 'fig1';
-    let scale = 1;
-    let x = 0;
-    let y = 0;
-    let drag = null;
+    const graphConfig = { displaylogo: false, responsive: true, scrollZoom: true };
+    const payloads = new Map();
+    const graphPayload = new Map();
 
-    function applyTransform() {
-      image.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+    async function loadPayload(name) {
+      if (!payloads.has(name)) {
+        payloads.set(name, fetch(`data/${name}.json`).then((response) => {
+          if (!response.ok) throw new Error(`无法载入 ${name}`);
+          return response.json();
+        }));
+      }
+      return payloads.get(name);
     }
 
-    function resetView() {
-      if (!image.naturalWidth || !image.naturalHeight) return;
-      const margin = 24;
-      scale = Math.min(
-        (viewport.clientWidth - margin) / image.naturalWidth,
-        (viewport.clientHeight - margin) / image.naturalHeight,
-        1
-      );
-      x = (viewport.clientWidth - image.naturalWidth * scale) / 2;
-      y = (viewport.clientHeight - image.naturalHeight * scale) / 2;
-      applyTransform();
+    async function draw(id, name) {
+      const payload = await loadPayload(name);
+      graphPayload.set(id, payload);
+      await Plotly.react(id, payload.data, payload.layout, graphConfig);
     }
 
-    function zoom(multiplier, originX = viewport.clientWidth / 2, originY = viewport.clientHeight / 2) {
-      const next = Math.max(0.03, Math.min(12, scale * multiplier));
-      const factor = next / scale;
-      x = originX - (originX - x) * factor;
-      y = originY - (originY - y) * factor;
-      scale = next;
-      applyTransform();
+    function reset(id) {
+      const payload = graphPayload.get(id);
+      if (payload) Plotly.react(id, payload.data, payload.layout, graphConfig);
     }
 
-    function setFigure(key) {
-      active = key;
-      const figure = figures[key];
-      title.textContent = figure.title;
-      image.alt = figure.alt;
-      document.querySelectorAll('[data-figure]').forEach((button) => {
-        button.setAttribute('aria-selected', String(button.dataset.figure === key));
-      });
-      image.src = figure.src;
+    function choosePanel(panel) {
+      const figure1 = panel === 'figure1';
+      document.getElementById('figure1-panel').style.display = figure1 ? 'block' : 'none';
+      document.getElementById('figure2-panel').style.display = figure1 ? 'none' : 'block';
+      document.querySelectorAll('[data-panel]').forEach((button) => button.setAttribute('aria-selected', String(button.dataset.panel === panel)));
     }
 
-    image.addEventListener('load', resetView);
-    if (image.complete) resetView();
-    document.querySelectorAll('[data-figure]').forEach((button) => {
-      button.addEventListener('click', () => setFigure(button.dataset.figure));
+    async function chooseFigure2(name) {
+      document.querySelectorAll('[data-figure2]').forEach((button) => button.setAttribute('aria-selected', String(button.dataset.figure2 === name)));
+      await draw('figure2', name);
+    }
+
+    document.querySelectorAll('[data-panel]').forEach((button) => button.addEventListener('click', () => choosePanel(button.dataset.panel)));
+    document.querySelectorAll('[data-figure2]').forEach((button) => button.addEventListener('click', () => chooseFigure2(button.dataset.figure2)));
+    document.querySelectorAll('[data-reset]').forEach((button) => button.addEventListener('click', () => reset(button.dataset.reset)));
+    Promise.all([draw('figure1-map', 'figure1_map'), draw('figure1-bc', 'figure1_bc'), chooseFigure2('figure2a')]).catch((error) => {
+      document.querySelectorAll('.loading').forEach((node) => { node.textContent = `图件载入失败：${error.message}`; });
     });
-    document.getElementById('zoom-in').addEventListener('click', () => zoom(1.25));
-    document.getElementById('zoom-out').addEventListener('click', () => zoom(0.8));
-    document.getElementById('reset').addEventListener('click', resetView);
-    viewport.addEventListener('wheel', (event) => {
-      event.preventDefault();
-      const rect = viewport.getBoundingClientRect();
-      zoom(event.deltaY < 0 ? 1.12 : 0.89, event.clientX - rect.left, event.clientY - rect.top);
-    }, { passive: false });
-    viewport.addEventListener('pointerdown', (event) => {
-      viewport.setPointerCapture(event.pointerId);
-      drag = { id: event.pointerId, startX: event.clientX, startY: event.clientY, x, y };
-      viewport.classList.add('dragging');
-    });
-    viewport.addEventListener('pointermove', (event) => {
-      if (!drag || event.pointerId !== drag.id) return;
-      x = drag.x + event.clientX - drag.startX;
-      y = drag.y + event.clientY - drag.startY;
-      applyTransform();
-    });
-    function stopDrag(event) {
-      if (drag && event.pointerId === drag.id) drag = null;
-      viewport.classList.remove('dragging');
-    }
-    viewport.addEventListener('pointerup', stopDrag);
-    viewport.addEventListener('pointercancel', stopDrag);
-    viewport.addEventListener('keydown', (event) => {
-      if (event.key === '+' || event.key === '=') zoom(1.25);
-      if (event.key === '-') zoom(0.8);
-      if (event.key === '0') resetView();
-    });
-    window.addEventListener('resize', resetView);
   </script>
 </body>
 </html>
